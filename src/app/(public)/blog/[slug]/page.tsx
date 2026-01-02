@@ -314,7 +314,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           {post.tags.length > 0 && (
             <div className="mt-8 pt-8 border-t">
               <div className="flex flex-wrap gap-2">
-                {post.tags.map((tag) => (
+                {post.tags.map((tag: typeof post.tags[number]) => (
                   <Badge key={tag.id} variant="secondary">
                     #{tag.name}
                   </Badge>
