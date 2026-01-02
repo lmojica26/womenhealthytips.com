@@ -1,0 +1,408 @@
+// Women's Health Tips - Database Schema
+// https://womenhealthytips.com
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==================== ENUMS ====================
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+  ARCHIVED
+}
+
+enum ContentType {
+  BLOG_POST
+  RECIPE
+  VIDEO
+  IMAGE
+}
+
+enum AffiliateNetwork {
+  CLICKBANK
+  AMAZON
+  SHAREASALE
+  CJ_AFFILIATE
+  IMPACT
+  OTHER
+}
+
+// ==================== MODELS ====================
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  color       String?  @default("#10b981")
+  icon        String?
+  order       Int      @default(0)
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+
+  // Relations
+  posts    Post[]
+  recipes  Recipe[]
+  videos   Video[]
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@map("categories")
+}
+
+model Post {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String     @unique
+  excerpt     String?    @db.Text
+  content     String     @db.Text
+  contentJson Json?
+
+  // Media
+  featuredImage    String?
+  featuredImageAlt String?
+  ogImage          String?
+
+  // Status & Scheduling
+  status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
+  scheduledAt DateTime?
+
+  // AI Generation Metadata
+  isAiGenerated Boolean @default(false)
+  aiModel       String?
+  aiPrompt      String? @db.Text
+
+  // SEO
+  metaTitle       String?
+  metaDescription String? @db.Text
+  keywords        String[]
+  canonicalUrl    String?
+  noIndex         Boolean @default(false)
+
+  // Engagement
+  viewCount   Int @default(0)
+  readingTime Int?
+
+  // Relations
+  categoryId     String?
+  category       Category?       @relation(fields: [categoryId], references: [id])
+  tags           Tag[]
+  affiliateLinks AffiliateLink[]
+  media          Media[]
+
+  // Author (Clerk user ID)
+  authorId String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([status, publishedAt])
+  @@index([categoryId])
+  @@index([authorId])
+  @@map("posts")
+}
+
+model Recipe {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  excerpt     String? @db.Text
+  content     String  @db.Text
+  contentJson Json?
+
+  // Media
+  featuredImage    String?
+  featuredImageAlt String?
+  images           String[]
+  videoUrl         String?
+
+  // Recipe Details
+  prepTime     Int?
+  cookTime     Int?
+  totalTime    Int?
+  servings     Int?
+  difficulty   String?
+  dietType     String?
+  ingredients  Json
+  instructions Json?
+
+  // Nutrition
+  calories Int?
+  protein  Int?
+  carbs    Int?
+  fat      Int?
+  fiber    Int?
+
+  // Diet Tags
+  isVegan      Boolean @default(false)
+  isVegetarian Boolean @default(false)
+  isGlutenFree Boolean @default(false)
+  isKeto       Boolean @default(false)
+  isDairyFree  Boolean @default(false)
+
+  // Status
+  status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
+
+  // AI Generation
+  isAiGenerated Boolean @default(false)
+  aiModel       String?
+
+  // SEO
+  metaTitle       String?
+  metaDescription String? @db.Text
+  keywords        String[]
+  canonicalUrl    String?
+
+  // Engagement
+  viewCount Int @default(0)
+
+  // Relations
+  categoryId     String?
+  category       Category?       @relation(fields: [categoryId], references: [id])
+  tags           Tag[]
+  affiliateLinks AffiliateLink[]
+
+  // Author
+  authorId String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([status, publishedAt])
+  @@index([categoryId])
+  @@index([dietType])
+  @@map("recipes")
+}
+
+model Video {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  excerpt     String? @db.Text
+  content     String? @db.Text
+
+  // YouTube Embed
+  youtubeId    String?
+  youtubeUrl   String?
+  thumbnailUrl String?
+
+  // Video Details
+  duration Int?
+
+  // Status
+  status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
+
+  // SEO
+  metaTitle       String?
+  metaDescription String? @db.Text
+  keywords        String[]
+  canonicalUrl    String?
+
+  // Engagement
+  viewCount Int @default(0)
+
+  // Relations
+  categoryId     String?
+  category       Category?       @relation(fields: [categoryId], references: [id])
+  tags           Tag[]
+  affiliateLinks AffiliateLink[]
+
+  // Author
+  authorId String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([status, publishedAt])
+  @@index([categoryId])
+  @@map("videos")
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+
+  // Relations
+  posts   Post[]
+  recipes Recipe[]
+  videos  Video[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@map("tags")
+}
+
+model AffiliateLink {
+  id        String @id @default(cuid())
+  name      String
+  url       String
+  shortCode String @unique
+
+  // Network Info
+  network    AffiliateNetwork @default(OTHER)
+  productId  String?
+  commission Decimal?         @db.Decimal(5, 2)
+
+  // Display
+  description  String?
+  imageUrl     String?
+  callToAction String?
+
+  // Sidebar Display Settings
+  showInSidebar Boolean @default(true)
+  sidebarOrder  Int     @default(0)
+
+  // Tracking
+  clickCount Int     @default(0)
+  isActive   Boolean @default(true)
+
+  // Relations
+  posts    Post[]
+  recipes  Recipe[]
+  videos   Video[]
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shortCode])
+  @@index([network])
+  @@index([showInSidebar, isActive])
+  @@map("affiliate_links")
+}
+
+model Media {
+  id           String @id @default(cuid())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  url          String
+
+  // Image Metadata
+  width   Int?
+  height  Int?
+  alt     String?
+  caption String?
+
+  // AI Generated
+  isAiGenerated Boolean @default(false)
+  aiPrompt      String? @db.Text
+
+  // Relations
+  posts Post[]
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("media")
+}
+
+model SiteSettings {
+  id              String  @id @default("settings")
+  siteName        String  @default("Women's Health Tips")
+  siteDescription String? @db.Text
+  siteUrl         String?
+
+  // Branding
+  logo           String?
+  favicon        String?
+  primaryColor   String @default("#10b981")
+  secondaryColor String @default("#ec4899")
+
+  // Social Links
+  facebookUrl  String?
+  instagramUrl String?
+  pinterestUrl String?
+  youtubeUrl   String?
+  twitterUrl   String?
+
+  // Newsletter
+  newsletterEnabled  Boolean @default(true)
+  newsletterProvider String?
+  newsletterApiKey   String?
+
+  // AI Settings
+  aiAutoPostEnabled Boolean @default(false)
+  aiPostFrequency   String  @default("daily")
+  aiDefaultModel    String  @default("gpt-4")
+
+  // SEO Defaults
+  defaultMetaTitle         String?
+  defaultMetaDesc          String? @db.Text
+  googleAnalyticsId        String?
+  googleSiteVerification   String?
+
+  // Timestamps
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+model AiGenerationLog {
+  id       String      @id @default(cuid())
+  type     ContentType
+  model    String
+  prompt   String      @db.Text
+  response String?     @db.Text
+
+  // Result
+  success      Boolean
+  errorMessage String?
+
+  // Tokens/Cost
+  tokensUsed    Int?
+  estimatedCost Decimal? @db.Decimal(10, 4)
+
+  // Relations
+  postId   String?
+  recipeId String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+
+  @@index([type, createdAt])
+  @@map("ai_generation_logs")
+}
+
+model NewsletterSubscriber {
+  id        String  @id @default(cuid())
+  email     String  @unique
+  firstName String?
+  isActive  Boolean @default(true)
+
+  // Source
+  source String?
+
+  // Timestamps
+  subscribedAt   DateTime  @default(now())
+  unsubscribedAt DateTime?
+
+  @@index([email])
+  @@map("newsletter_subscribers")
+}
