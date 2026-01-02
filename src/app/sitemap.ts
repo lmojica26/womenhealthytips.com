@@ -1,7 +1,11 @@
 import { MetadataRoute } from "next";
-import prisma from "@/lib/prisma";
+
+// Force dynamic to avoid build-time database calls
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Import prisma only when needed to avoid build-time errors
+  const { default: prisma } = await import("@/lib/prisma");
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://womenhealthytips.com";
 
   // Static pages
