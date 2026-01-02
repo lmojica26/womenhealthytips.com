@@ -39,7 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     orderBy: { publishedAt: "desc" },
   });
 
-  const postPages: MetadataRoute.Sitemap = posts.map((post) => ({
+  const postPages: MetadataRoute.Sitemap = posts.map((post: typeof posts[number]) => ({
     url: `${siteUrl}/blog/${post.slug}`,
     lastModified: post.updatedAt,
     changeFrequency: "weekly" as const,
@@ -53,7 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     orderBy: { publishedAt: "desc" },
   });
 
-  const recipePages: MetadataRoute.Sitemap = recipes.map((recipe) => ({
+  const recipePages: MetadataRoute.Sitemap = recipes.map((recipe: typeof recipes[number]) => ({
     url: `${siteUrl}/recipes/${recipe.slug}`,
     lastModified: recipe.updatedAt,
     changeFrequency: "weekly" as const,
@@ -67,7 +67,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     orderBy: { publishedAt: "desc" },
   });
 
-  const videoPages: MetadataRoute.Sitemap = videos.map((video) => ({
+  const videoPages: MetadataRoute.Sitemap = videos.map((video: typeof videos[number]) => ({
     url: `${siteUrl}/videos/${video.slug}`,
     lastModified: video.updatedAt,
     changeFrequency: "weekly" as const,
@@ -80,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     orderBy: { order: "asc" },
   });
 
-  const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
+  const categoryPages: MetadataRoute.Sitemap = categories.map((category: typeof categories[number]) => ({
     url: `${siteUrl}/blog?category=${category.slug}`,
     lastModified: category.updatedAt,
     changeFrequency: "weekly" as const,
