@@ -197,7 +197,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   <CardTitle className="text-lg">Related Articles</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {relatedPosts.map((relatedPost) => (
+                  {relatedPosts.map((relatedPost: typeof relatedPosts[number]) => (
                     <Link
                       key={relatedPost.id}
                       href={`/blog/${relatedPost.slug}`}
