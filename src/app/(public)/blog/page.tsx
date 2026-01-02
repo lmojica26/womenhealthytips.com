@@ -78,7 +78,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   ]);
 
   const currentCategory = categorySlug
-    ? categories.find((c) => c.slug === categorySlug)
+    ? categories.find((c: typeof categories[number]) => c.slug === categorySlug)
     : null;
 
   return (
