@@ -97,7 +97,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
                 All Posts
               </Badge>
             </Link>
-            {categories.map((category) => (
+            {categories.map((category: typeof categories[number]) => (
               <Link key={category.id} href={`/blog?category=${category.slug}`}>
                 <Badge
                   variant={categorySlug === category.slug ? "default" : "outline"}
@@ -149,7 +149,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
           {/* Posts Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {(page === 1 ? posts.slice(1) : posts).map((post) => (
+            {(page === 1 ? posts.slice(1) : posts).map((post: typeof posts[number]) => (
               <PostCard key={post.id} post={post} />
             ))}
           </div>

@@ -222,7 +222,7 @@ export default async function VideoPage({ params }: VideoPageProps) {
                   <CardTitle className="text-lg">More Videos</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {relatedVideos.map((relatedVideo) => (
+                  {relatedVideos.map((relatedVideo: typeof relatedVideos[number]) => (
                     <Link
                       key={relatedVideo.id}
                       href={`/videos/${relatedVideo.slug}`}
@@ -371,7 +371,7 @@ export default async function VideoPage({ params }: VideoPageProps) {
           {video.tags.length > 0 && (
             <div className="mt-8 pt-8 border-t">
               <div className="flex flex-wrap gap-2">
-                {video.tags.map((tag) => (
+                {video.tags.map((tag: typeof video.tags[number]) => (
                   <Badge key={tag.id} variant="secondary">
                     #{tag.name}
                   </Badge>

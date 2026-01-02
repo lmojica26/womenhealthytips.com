@@ -77,11 +77,11 @@ export default async function VideosPage({ searchParams }: VideosPageProps) {
   ]);
 
   const currentCategory = categorySlug
-    ? categories.find((c) => c.slug === categorySlug)
+    ? categories.find((c: typeof categories[number]) => c.slug === categorySlug)
     : null;
 
   // Filter categories that have videos
-  const categoriesWithVideos = categories.filter((c) => c._count.videos > 0);
+  const categoriesWithVideos = categories.filter((c: typeof categories[number]) => c._count.videos > 0);
 
   return (
     <ContentWithSidebar
@@ -100,7 +100,7 @@ export default async function VideosPage({ searchParams }: VideosPageProps) {
                   All Videos
                 </Badge>
               </Link>
-              {categoriesWithVideos.map((category) => (
+              {categoriesWithVideos.map((category: typeof categoriesWithVideos[number]) => (
                 <Link key={category.id} href={`/videos?category=${category.slug}`}>
                   <Badge
                     variant={categorySlug === category.slug ? "default" : "outline"}
@@ -153,7 +153,7 @@ export default async function VideosPage({ searchParams }: VideosPageProps) {
 
           {/* Videos Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {(page === 1 ? videos.slice(1) : videos).map((video) => (
+            {(page === 1 ? videos.slice(1) : videos).map((video: typeof videos[number]) => (
               <VideoCard key={video.id} video={video} />
             ))}
           </div>

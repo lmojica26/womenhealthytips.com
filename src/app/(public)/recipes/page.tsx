@@ -74,7 +74,7 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
   const { recipes, pagination } = await getRecipes(page, dietType);
 
   const currentDiet = dietType
-    ? DIET_TYPES.find((d) => d.value === dietType)
+    ? DIET_TYPES.find((d: typeof DIET_TYPES[number]) => d.value === dietType)
     : null;
 
   return (
@@ -93,7 +93,7 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
                 All Recipes
               </Badge>
             </Link>
-            {DIET_TYPES.map((diet) => (
+            {DIET_TYPES.map((diet: typeof DIET_TYPES[number]) => (
               <Link key={diet.value} href={`/recipes?diet=${diet.value}`}>
                 <Badge
                   variant={dietType === diet.value ? "default" : "outline"}
@@ -144,7 +144,7 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
 
           {/* Recipes Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {(page === 1 ? recipes.slice(1) : recipes).map((recipe) => (
+            {(page === 1 ? recipes.slice(1) : recipes).map((recipe: typeof recipes[number]) => (
               <RecipeCard key={recipe.id} recipe={recipe} />
             ))}
           </div>

@@ -104,7 +104,7 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map((category) => (
+            {categories.map((category: typeof categories[number]) => (
               <Link key={category.name} href={category.href}>
                 <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer group">
                   <CardHeader>

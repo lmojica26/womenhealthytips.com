@@ -294,7 +294,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
                   <CardTitle className="text-lg">More Recipes</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {relatedRecipes.map((relatedRecipe) => (
+                  {relatedRecipes.map((relatedRecipe: typeof relatedRecipes[number]) => (
                     <Link
                       key={relatedRecipe.id}
                       href={`/recipes/${relatedRecipe.slug}`}
@@ -501,7 +501,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
           {recipe.tags.length > 0 && (
             <div className="mt-8 pt-8 border-t">
               <div className="flex flex-wrap gap-2">
-                {recipe.tags.map((tag) => (
+                {recipe.tags.map((tag: typeof recipe.tags[number]) => (
                   <Badge key={tag.id} variant="secondary">
                     #{tag.name}
                   </Badge>
